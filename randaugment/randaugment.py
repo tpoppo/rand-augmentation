@@ -19,10 +19,13 @@ _PARAMS = {
 }
 
 
-def rand_augmentation(n, m, verbose=False, params={}):
+def rand_augmentation(n, m, verbose=False, params={}, is_rgb=True):
     PARAMS = _PARAMS
     PARAMS.update(params)
-    print(PARAMS)
+    if verbose:
+        print(f'params: {PARAMS}')
+        print(f'n: {n}')
+        print(f'm: {m}')
 
     @tf.function
     def aug_contrast(image):
@@ -107,13 +110,15 @@ def rand_augmentation(n, m, verbose=False, params={}):
         # aug_shear_x,
         # aug_shear_y,
         aug_translate,
-        aug_blur,
+        # aug_blur,
         aug_cutout,
         aug_zoom,
-        aug_saturation,
         # aug_jpeg_quality
     ]
-
+    if is_rgb:
+      available_ops += [
+        aug_saturation
+      ]
     def augment(image):
         image = tf.image.random_flip_left_right(image)
         image = tf.image.random_flip_up_down(image)
